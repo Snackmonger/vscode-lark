@@ -6,7 +6,7 @@ This extension mostly just ports over the Lark highlighter created by John Gardn
 
 Make sure node.js is installed, then install vsce::
 
-npm install -g @vscode/vsce
+    npm install -g @vscode/vsce
 
 Then make the package::
 
