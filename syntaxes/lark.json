@@ -1,0 +1,534 @@
+ {
+  "name": "Lark",
+  "scopeName": "source.lark",
+  "fileTypes": [
+    "lark"
+  ],
+  "patterns": [
+    {
+      "name": "comment.line.number-sign.shebang.lark",
+      "begin": "\\A#!",
+      "end": "$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.comment.shebang.lark"
+        }
+      }
+    },
+    {
+      "include": "#main"
+    }
+  ],
+  "firstLineMatch": "(?x)\n\n# Hashbang\n^\\#!.*(?:\\s|\\/|(?<=!)\\b)\n\tlark\n(?:$|\\s)\n\n|\n\n# Emacs modeline\n-\\*-(?i:[ \\t]*(?=[^:;\\s]+[ \\t]*-\\*-)|(?:.*?[ \\t;]|(?<=-\\*-))[ \\t]*mode[ \\t]*:[ \\t]*)\n\t(?i:lark)\n(?=[ \\t;]|(?<![-*])-\\*-).*?-\\*-\n\n|\n\t\n# Vim modeline\n(?:(?:^|[ \\t])(?:vi|Vi(?=m))(?:m[<=>]?[0-9]+|m)?|[ \\t]ex)(?=:(?=[ \\t]*set?[ \\t][^\\r\\n:]+:)|:(?![ \\t]*set?[ \\t]))\n(?:(?:[ \\t]*:[ \\t]*|[ \\t])\\w*(?:[ \\t]*=(?:[^\\\\\\s]|\\\\.)*)?)*[ \\t:]\n(?:filetype|ft|syntax)[ \\t]*=\n\t(?i:lark)\n(?=$|\\s|:)",
+  "repository": {
+    "main": {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#template"
+        },
+        {
+          "include": "#definition"
+        },
+        {
+          "include": "#directives"
+        }
+      ]
+    },
+    "alias": {
+      "name": "meta.alias.lark",
+      "match": "(->)\\s*((!?[_?]|!)?[a-zA-Z][_a-zA-Z0-9]*)?",
+      "captures": {
+        "1": {
+          "name": "storage.type.alias.lark"
+        },
+        "2": {
+          "name": "entity.name.alias.lark"
+        },
+        "3": {
+          "patterns": [
+            {
+              "include": "#name-prefix"
+            }
+          ]
+        }
+      }
+    },
+    "comma": {
+      "name": "punctuation.delimiter.separator.list.comma.lark",
+      "match": ","
+    },
+    "comment": {
+      "name": "comment.line.double-slash.lark",
+      "begin": "//",
+      "end": "$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.comment.lark"
+        }
+      }
+    },
+    "definition": {
+      "patterns": [
+        {
+          "name": "meta.definition.terminal.lark",
+          "begin": "^\\s*((!?[_?]|!)?[A-Z][_A-Z0-9]*)\\s*(\\.[-+.\\d]+\\s*)?(:)",
+          "end": "(?!\\G|^\\s*$)(?=^\\s*[^\\s|])",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.terminal.lark"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#name-prefix"
+                }
+              ]
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#priority"
+                }
+              ]
+            },
+            "4": {
+              "name": "keyword.operator.assignment.lark"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#definition-innards"
+            }
+          ]
+        },
+        {
+          "name": "meta.definition.rule.lark",
+          "begin": "^\\s*((!?[_?]|!)?[a-z][_a-z0-9]*)\\s*(\\.[-+.\\d]+\\s*)?(:)",
+          "end": "(?!\\G|^\\s*$)(?=^\\s*[^\\s|])",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.rule.lark"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#name-prefix"
+                }
+              ]
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#priority"
+                }
+              ]
+            },
+            "4": {
+              "name": "keyword.operator.assignment.lark"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#definition-innards"
+            }
+          ]
+        }
+      ]
+    },
+    "definition-innards": {
+      "patterns": [
+        {
+          "include": "#groups"
+        },
+        {
+          "include": "#alias"
+        },
+        {
+          "include": "#operators"
+        },
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#string"
+        },
+        {
+          "include": "#regexp"
+        },
+        {
+          "include": "#flags"
+        },
+        {
+          "include": "#range"
+        },
+        {
+          "include": "#template-usage"
+        },
+        {
+          "include": "#name"
+        },
+        {
+          "include": "#comma"
+        }
+      ]
+    },
+    "directives": {
+      "patterns": [
+        {
+          "name": "meta.directive.import.lark",
+          "begin": "(?:^|\\G)\\s*((%)import)(?=\\s|$)",
+          "end": "$",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.directive.import.lark"
+            },
+            "2": {
+              "name": "punctuation.definition.directive.lark"
+            }
+          },
+          "patterns": [
+            {
+              "name": "meta.import-specification.lark",
+              "begin": "\\G\\s+(\\.?\\w+(?:\\.\\w+)*+)(?=\\s|$)[ \\t]*",
+              "end": "(?=$)",
+              "beginCaptures": {
+                "0": {
+                  "name": "meta.module-reference.lark"
+                },
+                "1": {
+                  "name": "string.unquoted.module.import.lark",
+                  "patterns": [
+                    {
+                      "include": "#dot"
+                    },
+                    {
+                      "include": "#name"
+                    }
+                  ]
+                }
+              },
+              "patterns": [
+                {
+                  "include": "#alias"
+                },
+                {
+                  "include": "#name-list"
+                },
+                {
+                  "include": "#comment"
+                }
+              ]
+            },
+            {
+              "include": "#comment"
+            }
+          ]
+        },
+        {
+          "name": "meta.directive.$3.lark",
+          "begin": "(?:^|\\G)\\s*((%)(?!_)([A-Za-z_]+))(?=\\s|$)",
+          "end": "(?!\\G|^\\s*$)(?=^\\s*[^\\s|])",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.directive.$3.lark"
+            },
+            "2": {
+              "name": "punctuation.definition.directive.lark"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#definition-innards"
+            }
+          ]
+        }
+      ]
+    },
+    "dot": {
+      "name": "punctuation.delimiter.separator.period.dot.lark",
+      "match": "\\."
+    },
+    "flags": {
+      "name": "storage.modifier.flags.lark",
+      "match": "(?<=/|\")[imslux]+"
+    },
+    "groups": {
+      "patterns": [
+        {
+          "name": "meta.group.lark",
+          "begin": "\\(",
+          "end": "\\)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.group.round.bracket.begin.lark"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.group.round.bracket.end.lark"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#definition-innards"
+            }
+          ]
+        },
+        {
+          "name": "meta.group.lark",
+          "begin": "\\[",
+          "end": "\\]",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.group.square.bracket.begin.lark"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.group.square.bracket.end.lark"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#definition-innards"
+            }
+          ]
+        }
+      ]
+    },
+    "name": {
+      "name": "variable.definition.reference.lark",
+      "match": "(!?[_?]|!)?(?:[A-Z][_A-Z0-9]*|[a-z][_a-z0-9]*)",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#name-prefix"
+            }
+          ]
+        }
+      }
+    },
+    "name-list": {
+      "name": "meta.name-list.lark",
+      "begin": "\\G\\s*(\\()",
+      "end": "\\)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.name-list.round.bracket.begin.lark"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.name-list.round.bracket.end.lark"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#name"
+        },
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#comment"
+        }
+      ]
+    },
+    "name-prefix": {
+      "name": "storage.modifier.tree-shaping.lark",
+      "match": "(?:\\G|^)(!?[_?]|!)",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.name.lark"
+        }
+      }
+    },
+    "number": {
+      "name": "constant.numeric.decimal.lark",
+      "match": "-?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?"
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.logical.or.lark",
+          "match": "\\|"
+        },
+        {
+          "name": "keyword.operator.quantifier.lark",
+          "match": "[+*?]"
+        },
+        {
+          "name": "meta.exact-quantity.lark",
+          "match": "(~)\\s*(\\d+)(?:(\\.\\.)(\\d+))?",
+          "captures": {
+            "1": {
+              "name": "keyword.operator.quantifier.arbitrary.lark"
+            },
+            "2": {
+              "patterns": [
+                {
+                  "include": "#number"
+                }
+              ]
+            },
+            "3": {
+              "name": "punctuation.separator.range.quantities.lark"
+            },
+            "4": {
+              "patterns": [
+                {
+                  "include": "#number"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "priority": {
+      "name": "meta.priority.lark",
+      "begin": "(?:\\G|^)\\.",
+      "end": "$|(?=:)",
+      "beginCaptures": {
+        "0": {
+          "patterns": [
+            {
+              "include": "#dot"
+            }
+          ]
+        }
+      },
+      "patterns": [
+        {
+          "include": "#number"
+        }
+      ]
+    },
+    "range": {
+      "name": "punctuation.separator.range.characters.lark",
+      "match": "(?<=\")\\.\\."
+    },
+    "regexp": {
+      "name": "string.regexp.lark",
+      "begin": "/(?!/)",
+      "end": "/",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.lark"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.lark"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.regexp.python"
+        }
+      ]
+    },
+    "string": {
+      "name": "string.quoted.double.lark",
+      "begin": "\"",
+      "end": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.lark"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.lark"
+        }
+      },
+      "patterns": [
+        {
+          "match": "\\\\.",
+          "name": "constant.character.escape.lark"
+        }
+      ]
+    },
+    "template": {
+      "name": "meta.definition.template.lark",
+      "begin": "^\\s*((!?[_?]|!)?\\w+)\\s*(?={.*?}\\s*:)",
+      "end": "(?!\\G|^\\s*$)(?=^\\s*[^\\s|])",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.template.function.lark"
+        },
+        "2": {
+          "patterns": [
+            {
+              "include": "#name-prefix"
+            }
+          ]
+        }
+      },
+      "patterns": [
+        {
+          "include": "#template-args"
+        },
+        {
+          "include": "#definition-innards"
+        }
+      ]
+    },
+    "template-args": {
+      "name": "meta.function.parameters.lark",
+      "begin": "\\G\\s*({)",
+      "end": "(})(?:\\s*(:))?|(?=\\s*$)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.parameters.begin.lark"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.parameters.end.lark"
+        },
+        "2": {
+          "name": "keyword.operator.assignment.lark"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#template-usage"
+        },
+        {
+          "match": "\\w+",
+          "name": "variable.parameter.template.argument.lark"
+        },
+        {
+          "include": "#definition-innards"
+        }
+      ]
+    },
+    "template-usage": {
+      "name": "meta.function-call.lark",
+      "begin": "((!?[_?]|!)?\\w+)\\s*(?={)",
+      "end": "(?!\\G)",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.template.function.lark"
+        },
+        "2": {
+          "patterns": [
+            {
+              "include": "#name-prefix"
+            }
+          ]
+        }
+      },
+      "patterns": [
+        {
+          "include": "#template-args"
+        }
+      ]
+    }
+  }
+}

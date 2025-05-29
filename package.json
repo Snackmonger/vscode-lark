@@ -1,0 +1,43 @@
+{
+    "name": "vscode-lark",
+    "version": "0.1.0",
+    "publisher": "Snackmonger",
+    "engines": {
+        "vscode": "^1.2.0"
+    },
+    "license": "Apache-2.0",
+    "displayName": "Lark syntax highlighting (updated)",
+    "description": "Language support for Lark grammar files",
+    "categories": [
+        "Languages"
+    ],
+    "homepage": "none",
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "bugs": {
+        "url": ""
+    },
+    "contributes": {
+        "languages": [
+            {
+                "id": "lark",
+                "aliases": [
+                    "Lark"
+                ],
+                "extensions": [
+                    ".lark"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "lark",
+                "scopeName": "source.lark",
+                "path": "./syntaxes/lark.json"
+            }
+        ]
+    }
+}
